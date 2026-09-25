@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Balloons!</title>
+
+    <style>
+        body {
+            margin: 0;
+            background: black;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            position: relative;
+        }
+
+        .image-container {
+            position: absolute;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1;
+        }
+
+        #character {
+            width: 400px;
+            opacity: 0;
+            transition: opacity 0.1s;
+        }
+
+        #flash {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: white;
+            opacity: 0;
+            pointer-events: none;
+            z-index: 5;
+        }
+
+        .flash-animation {
+            animation: flash 0.7s ease-out;
+        }
+
+        @keyframes flash {
+            0% { opacity: 0; }
+            10% { opacity: 1; }
+            25% { opacity: 0; }
+            40% { opacity: 1; }
+            100% { opacity: 0; }
+        }
+
+        .buttons {
+            position: absolute;
+            bottom: 30px;
+            display: flex;
+            gap: 15px;
+            z-index: 10;
+        }
+
+        button {
+            padding: 15px 30px;
+            font-size: 18px;
+            cursor: pointer;
+            background: #fff;
+            border: none;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+        
+        button:hover {
+            background: #ddd;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Image Container -->
+    <div class="image-container">
+        <img id="character" src="FNAF2BB.webp" alt="Balloons">
+    </div>
+
+    <!-- Flash Layer -->
+    <div id="flash"></div>
+
+    <!-- Audio Element -->
+    <audio id="sound">
+        <source src="jumpscare.mp3" type="audio/mpeg">
+    </audio>
+
+    <!-- Interactive Button Layer -->
+    <div class="buttons">
+        <button onclick="scare()">Click Me</button>
+    </div>
+
+    <script>
+        function scare() {
+            const image = document.getElementById("character");
+            const flash = document.getElementById("flash");
+            const sound = document.getElementById("sound");
+
+            // Hide image initially
+            image.style.opacity = "0";
+
+            // Trigger flash animation reset
+            flash.classList.remove("flash-animation");
+            void flash.offsetWidth;
+            flash.classList.add("flash-animation");
+
+            // Display image and trigger audio simultaneously right after the flash peak
+            setTimeout(function() {
+                image.style.opacity = "1";
+                
+                // Restart audio and play right as image shows up
+                sound.currentTime = 0;
+                sound.play().catch(function(error) {
+                    console.log("Audio playback blocked by browser policy:", error);
+                });
+            }, 450);
+        }
+    </script>
+
+</body>
+</html>
