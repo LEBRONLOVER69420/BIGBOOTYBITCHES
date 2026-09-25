@@ -23,9 +23,18 @@
             z-index: 1;
         }
 
+        /* The starting image is fully visible at first */
+        #normal-image {
+            width: 400px;
+            opacity: 1;
+            transition: opacity 0.1s;
+        }
+
+        /* The jumpscare image stays completely hidden until triggered */
         #character {
             width: 400px;
             opacity: 0;
+            position: absolute;
             transition: opacity 0.1s;
         }
 
@@ -79,8 +88,12 @@
 
 <body>
 
-    <!-- Image Container -->
+    <!-- Image Container holding both images -->
     <div class="image-container">
+        <!-- CHANGE THIS to your starting/display image file name -->
+        <img id="normal-image" src="normal-display.jpg" alt="Normal Display">
+        
+        <!-- This remains your jumpscare image -->
         <img id="character" src="FNAF2BB.webp" alt="Balloons">
     </div>
 
@@ -99,23 +112,25 @@
 
     <script>
         function scare() {
-            const image = document.getElementById("character");
+            const normalImage = document.getElementById("normal-image");
+            const jumpscareImage = document.getElementById("character");
             const flash = document.getElementById("flash");
             const sound = document.getElementById("sound");
 
-            // Hide image initially
-            image.style.opacity = "0";
+            // Instantly hide the starting display image when clicked
+            normalImage.style.opacity = "0";
+            jumpscareImage.style.opacity = "0";
 
             // Trigger flash animation reset
             flash.classList.remove("flash-animation");
             void flash.offsetWidth;
             flash.classList.add("flash-animation");
 
-            // Display image and trigger audio simultaneously right after the flash peak
+            // Swap to jumpscare image and trigger audio after the flash peak
             setTimeout(function() {
-                image.style.opacity = "1";
+                jumpscareImage.style.opacity = "1";
                 
-                // Restart audio and play right as image shows up
+                // Restart audio and play
                 sound.currentTime = 0;
                 sound.play().catch(function(error) {
                     console.log("Audio playback blocked by browser policy:", error);
